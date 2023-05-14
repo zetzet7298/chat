@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.0.0-dist/css/bootstrap.css') }}"/>
+    <script src="{{url_for('static', filename='jquery/jquery-3.6.4.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/main.js')}}"></script>
+    <script src="{{url_for('static', filename='js/sso_service.js')}}"></script>
+        <script src="{{url_for('static', filename='js/chat_service.js')}}"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}"/>
+
+</head>
+<body>
+<div class="sidenav">
+    <div class="login-main-text">
+        <h2>Application<br> Login Page</h2>
+        <p>Login or register from here to access.</p>
+    </div>
+</div>
+<div class="main">
+    <div class="col-md-6 col-sm-12">
+        <div class="login-form">
+            <form>
+                <div class="form-group">
+                    <label>User Name</label>
+                    <input id="username" type="text" class="form-control" placeholder="User Name" value="testchat1@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input id="password" type="password" class="form-control" placeholder="Password">
+                </div>
+                <button type="submit" id="btn-login" class="btn btn-black">Login</button>
+                <button type="submit" class="btn btn-secondary">Register</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        check_login().then(res => {
+            if (res.login) {
+                window.location.href = '/'
+            }
+        })
+
+        $('#btn-login').click(function (e) {
+            e.preventDefault()
+
+            let data = {
+                'username': $('#username').val(),
+                'password': '123123'
+            }
+            login(data.username, data.password).then(res => {
+                setCookie('access_token', res.data.jwt)
+                setCookie('refresh_token', res.data.jwt)
+                if (res.data) {
+                    get_info().then(res => {
+                        create_profile(res.data.email).then(res=>{
+                                                  setCookie('current_user_id', res.data.id)
+                    window.location.href = '/'
+                        })
+                    })
+                }
+
+            })
+            // callAjax('https://beta-sso.tuoitre.vn/sso/v1/login', 'post', data)
+        })
+    })
+</script>

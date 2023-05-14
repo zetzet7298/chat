@@ -1,0 +1,5 @@
+pydantic
+uvicorn
+flask
+python-decouple==3.6
+pyopenssl
